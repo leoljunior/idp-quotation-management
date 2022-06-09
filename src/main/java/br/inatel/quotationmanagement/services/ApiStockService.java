@@ -59,8 +59,6 @@ public class ApiStockService {
 		json.put("host", "localhost");
 		json.put("port", "8081");
 
-		System.out.println(json);
-
 		this.webClient.method(HttpMethod.POST)
 				.uri(stockManagerURL + "/notification")
 				.bodyValue(json)

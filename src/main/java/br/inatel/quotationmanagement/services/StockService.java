@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import br.inatel.quotationmanagement.dtos.ApiStockDTO;
@@ -23,6 +24,7 @@ public class StockService {
 	private StockRepository stockRepository;
 	private ApiStockService apiStockService;
 
+	@Autowired
 	public StockService(StockRepository stockRepository, ApiStockService apiStockService) {
 		this.stockRepository = stockRepository;
 		this.apiStockService = apiStockService;
@@ -61,11 +63,9 @@ public class StockService {
 	}
 
 	public boolean stockExistOnExtApi(String id) {
-		List<ApiStockDTO> allStocksFromExtAPI = apiStockService.getAllStocksFromExtAPI();
-				
-		for (ApiStockDTO stock : allStocksFromExtAPI) {
-			
-			if (stock.getId().equals(id)) {
+		List<ApiStockDTO> allStocksFromExtAPI = apiStockService.getAllStocksFromExtAPI();				
+		for (ApiStockDTO stock : allStocksFromExtAPI) {			
+			if (stock.getId().equalsIgnoreCase(id)) {
 				return true;
 			}
 		}
