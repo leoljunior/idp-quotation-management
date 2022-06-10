@@ -14,9 +14,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import br.inatel.quotationmanagement.dtos.StockDTO;
+import br.inatel.quotationmanagement.exceptions.StockNotFoundException;
 import br.inatel.quotationmanagement.forms.StockForm;
 import br.inatel.quotationmanagement.models.Stock;
 import br.inatel.quotationmanagement.services.StockService;
@@ -39,8 +41,9 @@ public class StockController {
 			UriComponentsBuilder uriBuilder) {
 
 		if (!stockService.stockExistOnExtApi(stockForm.getStockId())) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND)
-					.body("Stock de ID: (" + stockForm.getStockId() + ") não cadastrado na API externa");
+//			return ResponseEntity.status(HttpStatus.NOT_FOUND)
+//					.body("Stock de ID: (" + stockForm.getStockId() + ") não cadastrado na API externa");
+					throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Stock de ID: (" + stockForm.getStockId() + ") não cadastrado na API externa");
 		}
 		Stock stock = stockService.toEntity(stockForm);
 		stockService.create(stock);
