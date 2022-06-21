@@ -5,6 +5,7 @@ import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,10 +36,8 @@ class StockServiceTest {
 		this.stockService = new StockService(stockRepository, apiStockService);
 	}
 	
-	
 	@Test
-	public void deveriaCriarUmStockQuote() {
-		
+	public void deveriaCriarUmStockQuote() {		
 		Stock stock = createAStock();
 		
 		when(stockRepository.save(stock)).thenReturn(stock);
@@ -48,6 +47,28 @@ class StockServiceTest {
 		assertEquals(stock, createdStock);
 		assertEquals(stock.getId(), createdStock.getId());
 		assertEquals(createdStock.getQuotes().size(), 1);		
+	}
+	
+	@Test
+	public void naoDeveriaCriarUmStockQuoteComIdNulaOuVazia() {		
+		Stock stock = createAStock();
+		stock.setId(null);
+		Stock createdStock = stockService.create(stock);		
+		
+		assertNotEquals(stock, createdStock);
+		assertTrue(createdStock == null);
+	}
+	
+	@Test
+	public void naoDeveriaCriarUmStockQuoteComValorNegativo() {		
+		Stock stock = createAStock();
+		stock.getQuotes().forEach(d -> {
+			d.setValue(new BigDecimal("-1"));
+		});
+		Stock createdStock = stockService.create(stock);		
+		
+		assertNotEquals(stock, createdStock);
+		assertTrue(createdStock == null);
 	}
 	
 	@Test
@@ -63,6 +84,14 @@ class StockServiceTest {
 	}
 	
 	@Test
+	public void deveriaRetornarUmaListaVaziaDeStockQuotes() {		
+		List<Stock> newStockList = stockService.getAll();
+		
+		assertTrue(newStockList.isEmpty());
+		assertEquals(newStockList.size(), 0);
+	}
+	
+	@Test
 	public void deveriaRetornarUmStockQuotePeloId() {
 		String id = "petr4";
 		Stock stock = createAStock();
@@ -75,6 +104,18 @@ class StockServiceTest {
 	}
 	
 	@Test
+	public void naoDeveriaRetornarUmStockQuotePeloId() {
+		String id = "petr";
+		Stock stock = createAStock();
+		
+		when(stockRepository.findByStockId(id)).thenReturn(stock);
+		
+		Stock foundStockQuote = stockService.getById(id);
+		
+		assertTrue(foundStockQuote != null);
+	}
+	
+	@Test
 	public void deveriaConverterUmStockFormParaUmStockModel() {
 		StockForm stockForm = createStockForm();
 		
@@ -84,7 +125,6 @@ class StockServiceTest {
 		
 	}
 	
-	
 	@Test
 	public void deveriaConverterUmQuoteMapEmQuoteList() {
 		Stock stock = createAStock();
@@ -93,6 +133,20 @@ class StockServiceTest {
 		List<Quote> quoteList = stockService.convertQuoteMapToQuoteList(stockForm, stock);
 		
 		assertTrue(!quoteList.isEmpty());
+	}
+	
+	@Test
+	public void naoDeveriaConverterUmQuoteMapEmQuoteListComValoresInvalidos() {
+		Stock stock = createAStock();
+		StockForm stockForm =  createStockForm();
+		
+		Map<String, String> quote = new HashMap<>();
+		quote.put("22-12-202", "100");
+		
+		stockForm.setQuotes(quote);
+		
+		assertThrows(DateTimeParseException.class,
+				() -> stockService.convertQuoteMapToQuoteList(stockForm, stock));
 	}
 	
 	
@@ -153,11 +207,11 @@ class StockServiceTest {
 		return stock;
 	}
 	
-	private List<Quote> createQuoteList() {
-		Stock stock = createAStock();
-		List<Quote> quoteList = new ArrayList<>();
-		quoteList.add(new Quote(LocalDate.now(), new BigDecimal("100"), stock));
-		quoteList.add(new Quote(LocalDate.now().plusDays(1), new BigDecimal("200"), stock));
-		return quoteList;
-	}
+//	private List<Quote> createQuoteList() {
+//		Stock stock = createAStock();
+//		List<Quote> quoteList = new ArrayList<>();
+//		quoteList.add(new Quote(LocalDate.now(), new BigDecimal("100"), stock));
+//		quoteList.add(new Quote(LocalDate.now().plusDays(1), new BigDecimal("200"), stock));
+//		return quoteList;
+//	}
 }

@@ -7,8 +7,10 @@ import java.util.stream.Collectors;
 
 import br.inatel.quotationmanagement.models.Stock;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
 public class StockDTO {
 
 	private String id;
@@ -23,7 +25,7 @@ public class StockDTO {
 		this.quotes = listToMap(stock);
 	}
 	
-	private Map<String, String> listToMap(Stock stock) {
+	public Map<String, String> listToMap(Stock stock) {
 		Map<String, String> quoteMap = new HashMap<>();
 		stock.getQuotes()
 				.stream()

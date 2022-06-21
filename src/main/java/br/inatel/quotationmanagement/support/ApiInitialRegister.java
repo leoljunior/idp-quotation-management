@@ -2,6 +2,7 @@ package br.inatel.quotationmanagement.support;
 
 import javax.annotation.PostConstruct;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import br.inatel.quotationmanagement.services.ApiStockService;
@@ -13,6 +14,7 @@ public class ApiInitialRegister {
 
 	private ApiStockService apiStockService;
 
+	@Autowired
 	public ApiInitialRegister(ApiStockService apiStockService) {
 		this.apiStockService = apiStockService;
 	}
