@@ -35,24 +35,24 @@ public class QuoteFormat implements ConstraintValidator<QuoteValidation, Map<Str
 //	}
 	@Override
 	public boolean isValid(Map<String, String> values, ConstraintValidatorContext context) {
-		
+
 		context.disableDefaultConstraintViolation();
 		boolean validData = true;
-		
+
 		try {
 			for (Map.Entry<String, String> value : values.entrySet()) {
-				
+
 				if (!value.getKey().matches("^[0-3]?[0-9]-[0-3]?[0-9]-(?:[0-9]{2})?[0-9]{2}$")) {
 					context.buildConstraintViolationWithTemplate(
-							"Data inválida ou fora do padrão dd-mm-aaaa: (" + value.getKey() + ")")
-					.addConstraintViolation();
+							"Data (" + value.getKey() + ") inválida ou fora do padrão dd-mm-aaaa")
+
+							.addConstraintViolation();
 					validData = false;
 				}
-				
+
 				if (!value.getValue().matches("^[0-9]*([\\\\.,]{1}[0-9]{0,2}){0,1}$") || value.getValue().isEmpty()) {
-					context.buildConstraintViolationWithTemplate(
-							"Valor inválido: (" + value.getValue() + ") O valor deve ser numérico, positivo e não vazio")
-					.addConstraintViolation();
+					context.buildConstraintViolationWithTemplate("Valor inválido: (" + value.getValue()
+							+ ") O valor deve ser numérico, positivo e não vazio").addConstraintViolation();
 					validData = false;
 				}
 			}

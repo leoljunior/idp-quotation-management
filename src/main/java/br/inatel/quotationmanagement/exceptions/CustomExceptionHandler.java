@@ -12,6 +12,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestControllerAdvice
 public class CustomExceptionHandler {
@@ -33,7 +34,22 @@ public class CustomExceptionHandler {
 		return responseErrors;
 	}
 	
+	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
+	@ExceptionHandler(InvalidQuoteDateException.class)
+	public ExceptionResponse handle(InvalidQuoteDateException ex) {
+		
+		ExceptionResponse responseErrors = new ExceptionResponse("quotes.date", ex.getMessage());
+		
+		return responseErrors;
+	}
 	
+	@ResponseStatus(code = HttpStatus.NOT_FOUND)
+	@ExceptionHandler(ResponseStatusException.class)
+	public ExceptionResponse handle(ResponseStatusException ex) {
+		ExceptionResponse responseErrors = new ExceptionResponse("stockId", ex.getReason());
+		
+		return responseErrors;
+	}
 	
 	
 	

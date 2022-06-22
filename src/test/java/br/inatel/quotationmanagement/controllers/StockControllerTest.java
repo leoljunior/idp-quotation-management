@@ -59,8 +59,9 @@ class StockControllerTest {
 		try {
 			StockForm stockForm = createStockForm();
 			stockController.createANewStockQuote(stockForm, null);			
-		} catch (ResponseStatusException e) {			
+		} catch (ResponseStatusException e) {
 			assertEquals(HttpStatus.NOT_FOUND, e.getStatus());
+			assertEquals("Stock de ID: (petr4) não cadastrado na API externa", e.getReason());
 		}
 	}
 	
@@ -96,9 +97,10 @@ class StockControllerTest {
 //		StockForm stockForm = createStockForm();
 //		when(stockService.stockExistOnExtApi(stockForm.getStockId())).thenReturn(true);
 //		Stock stock = createAStock();
+//		URI uri = uriBuilder.path("/stock/{id}").buildAndExpand(stock.getId()).toUri();
+//		when(uriBuilder.path("/stock/{id}"));
 //		when(stockService.toEntity(stockForm)).thenReturn(stock);
 //		when(uriBuilder).thenReturn(uriBuilder);
-//		
 //		ResponseEntity<?> createANewStockQuote = stockController.createANewStockQuote(stockForm, uriBuilder);
 //		
 //		

@@ -63,12 +63,21 @@ public class StockService {
 	}
 
 	public boolean stockExistOnExtApi(String id) {
-		List<ApiStockDTO> allStocksFromExtAPI = apiStockService.getAllStocksFromExtAPI();				
-		for (ApiStockDTO stock : allStocksFromExtAPI) {			
+		List<ApiStockDTO> allStocksFromExtAPI = apiStockService.getAllStocksFromExtAPI();
+		for (ApiStockDTO stock : allStocksFromExtAPI) {
 			if (stock.getId().equalsIgnoreCase(id)) {
 				return true;
 			}
 		}
 		return false;
 	}
+
+	public boolean stockQuoteDateAlreadyExists(String stockId, LocalDate date) {
+		Stock stock = stockRepository.findByStockIdAndQuotesDate(stockId, date);
+		if (stock != null) {
+			return true;
+		}
+		return false;
+	}
+
 }

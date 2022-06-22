@@ -19,7 +19,9 @@ import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import br.inatel.quotationmanagement.dtos.StockDTO;
+import br.inatel.quotationmanagement.exceptions.InvalidQuoteDateException;
 import br.inatel.quotationmanagement.forms.StockForm;
+import br.inatel.quotationmanagement.models.Quote;
 import br.inatel.quotationmanagement.models.Stock;
 import br.inatel.quotationmanagement.services.StockService;
 
@@ -28,8 +30,6 @@ import br.inatel.quotationmanagement.services.StockService;
 public class StockController {
 
 	private StockService stockService;
-//	private QuoteRepository quoteRepository;
-//	private ApiStockService apiStockService;
 	
 	@Autowired
 	public StockController(StockService stockService) {
@@ -42,10 +42,17 @@ public class StockController {
 			UriComponentsBuilder uriBuilder) {
 
 		if (!stockService.stockExistOnExtApi(stockForm.getStockId())) {
-//			return ResponseEntity.status(HttpStatus.NOT_FOUND)
-//					.body("Stock de ID: (" + stockForm.getStockId() + ") não cadastrado na API externa");
-					throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Stock de ID: (" + stockForm.getStockId() + ") não cadastrado na API externa");
+					throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Stock de ID: (" + stockForm.getStockId() + ") não cadastrado na API externa");
+		}		
+				
+		List<Quote> quoteList = stockService.convertQuoteMapToQuoteList(stockForm, new Stock());
+		
+		for (Quote quote : quoteList) {			
+			if (stockService.stockQuoteDateAlreadyExists(stockForm.getStockId(), quote.getDate())) {
+				throw new InvalidQuoteDateException("Quote com data: (" + quote.getDate() + ") já cadastrado.");
+			}			
 		}
+		
 		Stock stock = stockService.toEntity(stockForm);
 		stockService.create(stock);
 		URI uri = uriBuilder.path("/stock/{id}").buildAndExpand(stock.getId()).toUri();

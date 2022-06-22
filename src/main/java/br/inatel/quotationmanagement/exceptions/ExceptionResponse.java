@@ -14,6 +14,6 @@ public class ExceptionResponse {
 
 	private String field;
 	
-	private String status;
+	private String message;
 		
 }
