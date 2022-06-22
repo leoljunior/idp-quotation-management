@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import br.inatel.quotationmanagement.dtos.ApiStockDTO;
 import br.inatel.quotationmanagement.forms.StockForm;
 import br.inatel.quotationmanagement.models.Quote;
 import br.inatel.quotationmanagement.models.Stock;
@@ -150,10 +151,48 @@ class StockServiceTest {
 	}
 	
 	
+	@Test
+	void deveriaRetornarTrueSeStockExistirNaApiExt() {
+		List<ApiStockDTO> list = new ArrayList<>();
+		list.add(new ApiStockDTO("petr4", "Petrobras"));
+		when(apiStockService.getAllStocksFromExtAPI()).thenReturn(list);
+		
+		boolean stockExistOnExtApi = stockService.stockExistOnExtApi("petr4");
+		
+		assertTrue(stockExistOnExtApi);
+	}
+	
+	@Test
+	void deveriaRetornarFalseSeStockNaoExistirNaApiExt() {
+		List<ApiStockDTO> list = new ArrayList<>();
+		list.add(new ApiStockDTO("petr4", "Petrobras"));
+		when(apiStockService.getAllStocksFromExtAPI()).thenReturn(list);
+		
+		boolean stockExistOnExtApi = stockService.stockExistOnExtApi("petr");
+		
+		assertFalse(stockExistOnExtApi);
+	}
 	
 	
+	@Test
+	void deveriaRetornarTrueSeDataDoQuoteJaFoiCadastrada() {
+		Stock stock = createAStock();	
+		when(stockRepository.findByStockIdAndQuotesDate(stock.getStockId(), stock.getQuotes().get(0).getDate())).thenReturn(stock);
+		
+		boolean stockQuoteDateAlreadyExists = stockService.stockQuoteDateAlreadyExists("petr4", LocalDate.now());
+		
+		assertTrue(stockQuoteDateAlreadyExists);
+	}
 	
-	
+	@Test
+	void deveriaRetornarFalseSeDataDoQuoteNaoFoiCadastrada() {
+		Stock stock = createAStock();	
+		when(stockRepository.findByStockIdAndQuotesDate(stock.getStockId(), stock.getQuotes().get(0).getDate())).thenReturn(stock);
+		
+		boolean stockQuoteDateAlreadyExists = stockService.stockQuoteDateAlreadyExists("petr4", LocalDate.now().plusDays(1));
+		
+		assertFalse(stockQuoteDateAlreadyExists);
+	}
 	
 	
 	
