@@ -1,4 +1,4 @@
-version: "3.9"
+version: "3.8"
 services:
 
    mysql:
@@ -6,6 +6,7 @@ services:
       container_name: mysql
       ports:
          - 3306:3306
+         - 33060:33060
       environment:
          - MYSQL_ROOT_PASSWORD=root
          - MYSQL_DATABASE=bootdb
@@ -18,14 +19,12 @@ services:
       ports:
          - 8080:8080
       networks:
-         - quotation-management-network
-      depends_on:
-         - mysql
+         - quotation-management-network      
          
    quotationmanagement:
       build:
          dockerfile: ./Dockerfile
-         context: .
+         context: ./
       image: leonardojunior/quotation-management
       container_name: quotation-management
       ports:
@@ -34,11 +33,12 @@ services:
          - PORT=8081
          - MYSQL_CONTAINER=mysql
          - STOCK_MANAGER_CONTAINER=stockmanager
-         - SPRING_PROFILES_ACTIVE=prod
+         - SPRING_PROFILES_ACTIVE=prod 
       networks:
          - quotation-management-network
       depends_on:
          - stockmanager
+         - mysql
 
 networks:
    quotation-management-network:
