@@ -21,7 +21,7 @@ public class ApiInitialRegister {
 
 	@PostConstruct
 	public void startRegister() {
-		log.info("Registrando na API externa");
+		log.info("Registrando na Stock Manager API...");
 		apiStockService.registerOnApi();
 	}
 }

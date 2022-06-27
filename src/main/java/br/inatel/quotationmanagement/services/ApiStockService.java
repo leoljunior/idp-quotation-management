@@ -22,15 +22,7 @@ import reactor.core.publisher.Mono;
 public class ApiStockService {
 
 	@Value("${stock.manager.url}")
-	private String stockManagerURL;
-	
-//	private RestTemplate restTemplate;
-	
-//	private WebClient webClient;
-//
-//	public ApiStockService(WebClient webClient) {
-//		this.webClient = webClient;
-//	}
+	private String stockManagerURL;	
 
 	@Cacheable(value = "allStocksApi")
 	public List<ApiStockDTO> getAllStocksFromExtAPI() {
@@ -71,24 +63,6 @@ public class ApiStockService {
 				.bodyToMono(String.class)
 				.block();
 		
-		log.info("Quotation Management registrado com sucesso!");
+		log.info("Quotation Management registrado na Stock Manager API.");
 	}
-	
-//	public void registerOnApi() {
-//		this.restTemplate = new RestTemplate();
-//				
-//		log.info("Registering for notification!");
-//
-//		HttpHeaders header = new HttpHeaders();
-//		header.setContentType(MediaType.APPLICATION_JSON);
-//
-//		JSONObject body = new JSONObject();
-//		body.put("host", "localhost");
-//		body.put("port", 8081);
-//
-//		HttpEntity<String> request = new HttpEntity<String>(body.toString(), header);
-//
-//		restTemplate.postForObject("http://localhost:8080/notification", request, String.class);
-//	}
-
 }

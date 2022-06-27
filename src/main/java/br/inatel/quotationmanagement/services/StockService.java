@@ -9,8 +9,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import br.inatel.quotationmanagement.dtos.ApiStockDTO;
 import br.inatel.quotationmanagement.forms.StockForm;
@@ -22,6 +24,7 @@ import br.inatel.quotationmanagement.repositories.StockRepository;
 public class StockService {
 
 	private StockRepository stockRepository;
+	
 	private ApiStockService apiStockService;
 
 	@Autowired
@@ -30,6 +33,7 @@ public class StockService {
 		this.apiStockService = apiStockService;
 	}
 
+	@Transactional
 	public Stock create(Stock stock) {
 		return stockRepository.save(stock);
 	}

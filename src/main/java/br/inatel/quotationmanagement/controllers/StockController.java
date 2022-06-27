@@ -3,7 +3,6 @@ package br.inatel.quotationmanagement.controllers;
 import java.net.URI;
 import java.util.List;
 
-import javax.transaction.Transactional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,22 +28,20 @@ import br.inatel.quotationmanagement.services.StockService;
 @RequestMapping("/stock")
 public class StockController {
 
-	private StockService stockService;
+	private StockService stockService;	
 	
 	@Autowired
 	public StockController(StockService stockService) {
 		this.stockService = stockService;
 	}
 
-	@Transactional
 	@PostMapping
-	public ResponseEntity<?> createANewStockQuote(@RequestBody @Valid StockForm stockForm,
-			UriComponentsBuilder uriBuilder) {
-
+	public ResponseEntity<?> createANewStockQuote(@RequestBody @Valid StockForm stockForm, UriComponentsBuilder uriBuilder) {
+		
 		if (!stockService.stockExistOnExtApi(stockForm.getStockId())) {
-					throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Stock de ID: (" + stockForm.getStockId() + ") não cadastrado na API externa");
+			throw new ResponseStatusException(HttpStatus.NOT_FOUND,"Stock de ID: (" + stockForm.getStockId() + ") não cadastrado na API externa");
 		}		
-				
+		
 		List<Quote> quoteList = stockService.convertQuoteMapToQuoteList(stockForm, new Stock());
 		
 		for (Quote quote : quoteList) {			
@@ -56,6 +53,7 @@ public class StockController {
 		Stock stock = stockService.toEntity(stockForm);
 		stockService.create(stock);
 		URI uri = uriBuilder.path("/stock/{id}").buildAndExpand(stock.getId()).toUri();
+		
 		return ResponseEntity.created(uri).body(new StockDTO(stock));
 	}
 
@@ -75,10 +73,4 @@ public class StockController {
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(new StockDTO(stock));
 	}
-
-//	@PostMapping
-//	public ResponseEntity<ApiStockDTO> createAStock(@RequestBody ApiStockDTO apiStockDTO) {
-//		return ResponseEntity.status(HttpStatus.CREATED).body(apiStockService.createANewStockOnExtAPI(apiStockDTO));
-//	}
-
 }

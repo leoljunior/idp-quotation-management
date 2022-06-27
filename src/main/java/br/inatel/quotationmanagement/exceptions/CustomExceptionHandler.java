@@ -36,79 +36,15 @@ public class CustomExceptionHandler {
 	
 	@ResponseStatus(code = HttpStatus.BAD_REQUEST)
 	@ExceptionHandler(InvalidQuoteDateException.class)
-	public ExceptionResponse handle(InvalidQuoteDateException ex) {
-		
-		ExceptionResponse responseErrors = new ExceptionResponse("quotes.date", ex.getMessage());
-		
+	public ExceptionResponse handle(InvalidQuoteDateException ex) {		
+		ExceptionResponse responseErrors = new ExceptionResponse("quotes.date", ex.getMessage());		
 		return responseErrors;
 	}
 	
 	@ResponseStatus(code = HttpStatus.NOT_FOUND)
 	@ExceptionHandler(ResponseStatusException.class)
 	public ExceptionResponse handle(ResponseStatusException ex) {
-		ExceptionResponse responseErrors = new ExceptionResponse("stockId", ex.getReason());
-		
+		ExceptionResponse responseErrors = new ExceptionResponse("stockId", ex.getReason());		
 		return responseErrors;
 	}
-	
-	
-	
-	
-	
-	
-//	@Autowired
-//	private MessageSource messageSource;
-//	
-//	@Override
-//	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
-//			HttpHeaders headers, HttpStatus status, WebRequest request) {
-//
-//		List<ExceptionResponse.Field> campos = new ArrayList<>();
-//		
-//		for (ObjectError error : ex.getBindingResult().getAllErrors()) {
-//			String nome = ((FieldError) error).getField(); 
-//			String mensagem = messageSource.getMessage(error, LocaleContextHolder.getLocale());
-//			
-//			campos.add(new ExceptionResponse.Field(nome, mensagem));
-//		}
-//		
-//		ExceptionResponse response = new ExceptionResponse();
-//		response.setStatus(status.value());
-//		response.setTitle("Um ou mais campos estão inválidos. Preencha corretamente e tente novamente.");
-//		response.setFields(campos);
-//		
-//		return handleExceptionInternal(ex, response, headers, status, request);
-//	}
-	
-//	@org.springframework.web.bind.annotation.ExceptionHandler(NegocioException.class) 
-//	public ResponseEntity<Object> handleNegocio(NegocioException ex, WebRequest request) {
-//		
-//		HttpStatus status = HttpStatus.BAD_REQUEST;
-//		
-//		ExceptionResponse response = new ExceptionResponse();
-//		response.setStatus(status.value()); 
-//		response.setTitle(ex.getMessage());
-//		
-//		return handleExceptionInternal(ex, response, new HttpHeaders(), status, request);
-//	}
-	
-//	@org.springframework.web.bind.annotation.ExceptionHandler(StockNotFoundException.class)
-//	public ResponseEntity<Object> handleNegocio(StockNotFoundException ex, WebRequest request) {
-//		
-//		HttpStatus status = HttpStatus.NOT_FOUND;
-//		
-//		ExceptionResponse response = new ExceptionResponse();
-//		response.setStatus(status.value());
-//		response.setTitle(ex.getMessage()); 
-//		
-//		return handleExceptionInternal(ex, response, new HttpHeaders(), status, request);
-//	}
-	
-//	@ExceptionHandler(StockNotFoundException.class)
-//	  public final ResponseEntity<ExceptionResponse> handleNotFoundException(StockNotFoundException ex, WebRequest request) {
-//	    ExceptionResponse exceptionResponse = new ExceptionResponse(ex.getMessage(),
-//	        request.getDescription(false),HttpStatus.NOT_ACCEPTABLE.getReasonPhrase());
-//
-//	    return new ResponseEntity<ExceptionResponse>(exceptionResponse, HttpStatus.NOT_ACCEPTABLE);
-//	  }
 }

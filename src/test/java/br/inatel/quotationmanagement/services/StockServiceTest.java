@@ -192,26 +192,8 @@ class StockServiceTest {
 		boolean stockQuoteDateAlreadyExists = stockService.stockQuoteDateAlreadyExists("petr4", LocalDate.now().plusDays(1));
 		
 		assertFalse(stockQuoteDateAlreadyExists);
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	}	
 
-//	@Test
-//	void deveRetornarTodosOsStockQuotes() {
-//		stockRepository.findAll();
-//		verify(stockRepository).findAll();
-//
-//	}
 
 	private StockForm createStockForm() {
 		Map<String, String> quoteMap = new HashMap<>();
@@ -245,12 +227,4 @@ class StockServiceTest {
 		stock.addQuotes(quotes);
 		return stock;
 	}
-	
-//	private List<Quote> createQuoteList() {
-//		Stock stock = createAStock();
-//		List<Quote> quoteList = new ArrayList<>();
-//		quoteList.add(new Quote(LocalDate.now(), new BigDecimal("100"), stock));
-//		quoteList.add(new Quote(LocalDate.now().plusDays(1), new BigDecimal("200"), stock));
-//		return quoteList;
-//	}
 }
