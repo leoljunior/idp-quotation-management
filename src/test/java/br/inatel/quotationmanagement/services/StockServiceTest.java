@@ -1,7 +1,7 @@
 package br.inatel.quotationmanagement.services;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -37,12 +37,11 @@ class StockServiceTest {
 		this.stockService = new StockService(stockRepository, apiStockService);
 	}
 	
+// Create method tests	
 	@Test
 	public void deveriaCriarUmStockQuote() {		
-		Stock stock = createAStock();
-		
-		when(stockRepository.save(stock)).thenReturn(stock);
-		
+		Stock stock = createAStock();		
+		when(stockRepository.save(stock)).thenReturn(stock);		
 		Stock createdStock = stockService.create(stock);		
 		
 		assertEquals(stock, createdStock);
@@ -73,6 +72,43 @@ class StockServiceTest {
 	}
 	
 	@Test
+	public void naoDeveriaCriarUmStockQuoteComValorNulo() {		
+		Stock stock = createAStock();
+		stock.getQuotes().forEach(d -> {
+			d.setValue(null);
+		});
+		Stock createdStock = stockService.create(stock);		
+		
+		assertNotEquals(stock, createdStock);
+		assertTrue(createdStock == null);
+	}
+	
+	@Test
+	public void naoDeveriaCriarUmStockQuoteDataNula() {		
+		Stock stock = createAStock();
+		stock.getQuotes().forEach(d -> {
+			d.setDate(null);
+		});
+		Stock createdStock = stockService.create(stock);		
+		
+		assertNotEquals(stock, createdStock);
+		assertTrue(createdStock == null);
+	}
+	
+	@Test
+	public void naoDeveriaCriarUmStockQuoteDataInvalida() {		
+		Stock stock = createAStock();
+		stock.getQuotes().forEach(d -> {
+			d.setDate(LocalDate.of(202, 12, 10));
+		});
+		Stock createdStock = stockService.create(stock);		
+		
+		assertNotEquals(stock, createdStock);
+		assertTrue(createdStock == null);
+	}		
+	
+//	Get all method tests
+	@Test
 	public void deveriaRetornarTodosOsStocksQuotes() {
 		List<Stock> stockList = createStockList();
 		
@@ -90,8 +126,9 @@ class StockServiceTest {
 		
 		assertTrue(newStockList.isEmpty());
 		assertEquals(newStockList.size(), 0);
-	}
+	}	
 	
+//	Get by id method tests
 	@Test
 	public void deveriaRetornarUmStockQuotePeloId() {
 		String id = "petr4";
@@ -102,20 +139,23 @@ class StockServiceTest {
 		Stock foundStockQuote = stockService.getById(id);
 		
 		assertEquals(id, foundStockQuote.getStockId());
+		assertEquals(stock, foundStockQuote);
 	}
 	
 	@Test
 	public void naoDeveriaRetornarUmStockQuotePeloId() {
-		String id = "petr";
+		String id = "4rtep";
 		Stock stock = createAStock();
 		
-		when(stockRepository.findByStockId(id)).thenReturn(stock);
+		when(stockRepository.findByStockId("petr4")).thenReturn(stock);
 		
 		Stock foundStockQuote = stockService.getById(id);
 		
-		assertTrue(foundStockQuote != null);
-	}
+		assertTrue(foundStockQuote == null);
+		assertNotEquals(stock, foundStockQuote);
+	}	
 	
+//	Convert to entity method test
 	@Test
 	public void deveriaConverterUmStockFormParaUmStockModel() {
 		StockForm stockForm = createStockForm();
@@ -126,6 +166,7 @@ class StockServiceTest {
 		
 	}
 	
+//	Convert map to list method test
 	@Test
 	public void deveriaConverterUmQuoteMapEmQuoteList() {
 		Stock stock = createAStock();
@@ -133,7 +174,8 @@ class StockServiceTest {
 		
 		List<Quote> quoteList = stockService.convertQuoteMapToQuoteList(stockForm, stock);
 		
-		assertTrue(!quoteList.isEmpty());
+		assertEquals(ArrayList.class, quoteList.getClass());
+		assertFalse(quoteList.isEmpty());
 	}
 	
 	@Test
@@ -150,7 +192,7 @@ class StockServiceTest {
 				() -> stockService.convertQuoteMapToQuoteList(stockForm, stock));
 	}
 	
-	
+//	Method that verify if the Stock exists in the external api
 	@Test
 	void deveriaRetornarTrueSeStockExistirNaApiExt() {
 		List<ApiStockDTO> list = new ArrayList<>();
@@ -173,7 +215,7 @@ class StockServiceTest {
 		assertFalse(stockExistOnExtApi);
 	}
 	
-	
+//	Method that verify if Quote date has already been saved
 	@Test
 	void deveriaRetornarTrueSeDataDoQuoteJaFoiCadastrada() {
 		Stock stock = createAStock();	
@@ -195,6 +237,7 @@ class StockServiceTest {
 	}	
 
 
+	
 	private StockForm createStockForm() {
 		Map<String, String> quoteMap = new HashMap<>();
 		quoteMap.put("12-12-2022", "100");

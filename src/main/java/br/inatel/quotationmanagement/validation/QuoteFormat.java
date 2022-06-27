@@ -17,9 +17,7 @@ public class QuoteFormat implements ConstraintValidator<QuoteValidation, Map<Str
 
 				if (!value.getKey().matches("^[0-3]?[0-9]-[0-3]?[0-9]-(?:[0-9]{2})?[0-9]{2}$")) {
 					constraintValidatorContext.buildConstraintViolationWithTemplate(
-							"Data (" + value.getKey() + ") inválida ou fora do padrão dd-mm-aaaa")
-
-							.addConstraintViolation();
+							"Data (" + value.getKey() + ") inválida ou fora do padrão dd-mm-aaaa").addConstraintViolation();
 					validData = false;
 				}
 

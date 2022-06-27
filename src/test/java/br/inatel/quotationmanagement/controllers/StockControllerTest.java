@@ -30,10 +30,10 @@ class StockControllerTest {
 
 	@Test
 	void deveriaRetornarStatusCode201AoCriarUmStockQuote() {
-		StockForm stock = createStockForm();
+		StockForm stockForm = createStockForm();
 		webTestClient.post()
 		.uri("/stock")
-		.body(BodyInserters.fromValue(stock))
+		.body(BodyInserters.fromValue(stockForm))
 		.exchange()
 		.expectHeader().contentType(MediaType.APPLICATION_JSON)
 		.expectStatus().isCreated();
@@ -41,9 +41,9 @@ class StockControllerTest {
 	
 	@Test
 	void deveriaRetornarStatusCode400AoTentarCadastrarUmStockQuoteComDataJaCadastrada() {
-		StockForm stock = createStockForm();
+		StockForm stockForm = createStockForm();
 		webTestClient.post()
-		.uri("/stock").body(BodyInserters.fromValue(stock))
+		.uri("/stock").body(BodyInserters.fromValue(stockForm))
 		.exchange()
 		.expectHeader().contentType(MediaType.APPLICATION_JSON)
 		.expectStatus().isBadRequest();
@@ -51,11 +51,11 @@ class StockControllerTest {
 
 	@Test
 	void deveriaRetornarStatusCode404AoTentarCadastrarUmStockQuoteComStockIdInexistente() {
-		StockForm stock = createStockForm();
-		stock.setStockId("blablabla");
+		StockForm stockForm = createStockForm();
+		stockForm.setStockId("blablabla");
 		webTestClient.post()
 		.uri("/stock")
-		.body(BodyInserters.fromValue(stock))
+		.body(BodyInserters.fromValue(stockForm))
 		.exchange()
 		.expectHeader().contentType(MediaType.APPLICATION_JSON)
 		.expectStatus().isNotFound();
